@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Fitness Tracker</title>
+        <style>
+            body { 
+                font-family: system-ui, sans-serif;
+                max-width: 480px;
+                margin: 40px auto;
+                padding: 20px 28px;
+                background: #f7faff;
+                border: 1px solid #d6e2ff;
+                border-radius: 16px;
+                box-shadow: 0 0 12px rgba(0,0,0,0.06);
+            }
+
+            h2 {
+                text-align: center;
+                margin-bottom: 20px;
+                color: #1a3a8a;
+            }
+
+            .exercise-row { 
+                display: flex;
+                gap: 8px;
+                margin-bottom: 10px;
+                align-items: center; 
+            }
+
+            .exercise-row select,
+            .exercise-row input { 
+                flex: 1;
+                padding: 8px 10px;
+                border: 1px solid #b9c6e0; 
+                border-radius: 6px;
+                background: white;
+            }
+
+            .remove-btn { 
+                background: white; 
+                border: 1px solid #e0b4b4;
+                font-weight: bold;
+                cursor: pointer;
+                font-size: 16px;
+                color: #c33;
+                width: 34px;
+                height: 34px;
+                border-radius: 6px;
+            }
+
+            button { 
+                padding: 10px 16px; 
+                border: none;
+                border-radius: 6px;
+                cursor: pointer;
+                font-size: 14px;
+            }
+
+            #submitBtn { background: #246aff; color: white; }
+            #addBtn { background: #28c22f; color: white; margin-top: 6px; }
+            #savePkgBtn { background: #f39c12; color: white; }
+
+            .box {
+                border: 1px solid #d6e2ff;
+                padding: 16px;
+                border-radius: 10px;
+                margin-top: 20px;
+                background: white;
+            }
+
+        </style>
+        </head>
+
+        <body>
+        <h2>Fitness Tracker</h2>
+
+        <div id="exerciseContainer"></div>
+        <button id="addBtn">+ Add Exercise</button>
+        <br><br>
+
+        <button id="savePkgBtn" style="background:#f39c12;color:white;margin-top:6px;">Save as Package</button>
+
+        <br><br>
+        <label>Load Package:</label>
+        <select id="packageSelect">
+            <option value="">-- None --</option>
+        </select>
+
+        <button id="submitBtn">Submit</button>
+
+        <div id="summary" class="box" style="display:none;"></div>
+        <div id="streakBox" class="box"></div>
+
+        <script>
+            /* ----------------- PACKAGE SYSTEM ----------------- */
+
+            function getPackages() {
+                return JSON.parse(localStorage.getItem("packages") || "{}");
+            }
+
+            function savePackages(pkgs) {
+                localStorage.setItem("packages", JSON.stringify(pkgs));
+            }
+
+            function refreshPackageList() {
+                const pkgs = getPackages();
+                const pkgSelect = document.getElementById("packageSelect");
+                pkgSelect.innerHTML = `<option value="">-- None --</option>`;
+                for (const name in pkgs) {
+                    const opt = document.createElement("option");
+                    opt.value = name;
+                    opt.textContent = name;
+                    pkgSelect.appendChild(opt);
+                }
+            }
+
+            /* ----------------- ROW CREATION ----------------- */
+
+            function createExerciseRow(exValue = "", amtValue = "") {
+                const row = document.createElement("div");
+                row.className = "exercise-row";
+
+                row.innerHTML = `
+                    <select class="exercise">
+                        <option value="">-- Select --</option>
+                        <option value="pushups">Push Ups</option>
+                        <option value="pullups">Pull Ups</option>
+                        <option value="dips">Dips</option>
+                        <option value="squats">Squats</option>
+                        <option value="legraises">Leg Raises</option>
+                        <option value="lsit">L-Sit</option>
+                        <option value="lunges">Lunges</option>
+                        <option value="planks">Planks</option>
+                        <option value="situps">Sit Ups</option>
+                        <option value="jumping_jacks">Jumping Jacks</option>
+                        <option value="burpees">Burpees</option>
+                    </select>
+                    <input type="text" class="amount" placeholder="20 reps / 1 min">
+                    <button class="remove-btn" title="Remove row">&times;</button>
+                `;
+
+                const ex = row.querySelector(".exercise");
+                const amt = row.querySelector(".amount");
+                const removeBtn = row.querySelector(".remove-btn");
+
+                ex.value = exValue;
+                amt.value = amtValue;
+
+                removeBtn.addEventListener("click", () => row.remove());
+
+                document.getElementById("exerciseContainer").appendChild(row);
+                return row;
+            }
+
+            /* ----------------- LOAD PACKAGE ----------------- */
+
+            document.getElementById("packageSelect").addEventListener("change", () => {
+                const name = document.getElementById("packageSelect").value;
+                if (!name) return;
+
+                const pkgs = getPackages();
+                const pkg = pkgs[name];
+
+                const container = document.getElementById("exerciseContainer");
+                container.innerHTML = "";
+
+                pkg.forEach(item => createExerciseRow(item.ex, item.amt));
+            });
+
+            /* ----------------- SAVE PACKAGE ----------------- */
+
+            document.getElementById("savePkgBtn").addEventListener("click", () => {
+                const rows = document.querySelectorAll(".exercise-row");
+                let pkg = [];
+
+                rows.forEach(row => {
+                    const ex = row.querySelector(".exercise").value;
+                    const amt = row.querySelector(".amount").value.trim();
+                    if (ex && amt) pkg.push({ ex, amt });
+                });
+
+                if (pkg.length === 0) {
+                    alert("Add at least one exercise to save a package.");
+                    return;
+                }
+
+                const name = prompt("Name your package:");
+                if (!name) return;
+
+                const pkgs = getPackages();
+                pkgs[name] = pkg;
+                savePackages(pkgs);
+                refreshPackageList();
+
+                alert("Package saved.");
+            });
+
+            /* ----------------- STREAK SYSTEM ----------------- */
+
+            function getToday() {
+                const d = new Date();
+                return d.toISOString().split("T")[0];
+            }
+
+            function loadStreak() {
+                return Number(localStorage.getItem("streak") || 0);
+            }
+
+            function loadLastDate() {
+                return localStorage.getItem("lastDate") || "";
+            }
+
+            function saveStreak(streak, date) {
+                localStorage.setItem("streak", streak);
+                localStorage.setItem("lastDate", date);
+            }
+
+            function updateStreak() {
+                const today = getToday();
+                const last = loadLastDate();
+                let streak = loadStreak();
+
+                if (last === today) return streak;
+
+                const y = new Date();
+                y.setDate(y.getDate() - 1);
+                const yesterday = y.toISOString().split("T")[0];
+
+                if (last === yesterday) streak++;
+                else streak = 1;
+
+                saveStreak(streak, today);
+                return streak;
+            }
+
+            function refreshStreakBox() {
+                const streak = loadStreak();
+                const last = loadLastDate();
+                document.getElementById("streakBox").innerHTML =
+                    `<strong>Current Streak:</strong> ${streak} days<br>
+                     <strong>Last Workout:</strong> ${last || "None"}`;
+            }
+
+            /* ----------------- SUBMIT ----------------- */
+
+            document.getElementById("submitBtn").addEventListener("click", () => {
+                const rows = document.querySelectorAll(".exercise-row");
+                const summary = document.getElementById("summary");
+                let list = "";
+
+                rows.forEach(row => {
+                    const ex = row.querySelector(".exercise").value;
+                    const amt = row.querySelector(".amount").value.trim();
+                    if (ex && amt) list += `<p><strong>${ex}:</strong> ${amt}</p>`;
+                });
+
+                if (!list) {
+                    summary.style.display = "block";
+                    summary.innerHTML = "Fill at least one exercise row.";
+                    return;
+                }
+
+                const streak = updateStreak();
+
+                summary.style.display = "block";
+                summary.innerHTML = `
+                    <h3>Workout Summary</h3>
+                    ${list}
+                    <p><strong>Streak:</strong> ${streak} days</p>
+                    <p style="font-size:12px;color:#666;">Take a screenshot</p>
+                `;
+                refreshStreakBox();
+            });
+
+            /* ----------------- INIT ----------------- */
+
+            // THIS is the missing line you didn't have in your last file:
+            document.getElementById("addBtn").addEventListener("click", createExerciseRow);
+
+            // create first row and load saved state
+            createExerciseRow();
+            refreshPackageList();
+            refreshStreakBox();
+
+        </script>
+
+    </body>
+</html>
