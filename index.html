@@ -22,18 +22,18 @@
                 color: #1a3a8a;
             }
 
-            .exercise-row { 
-                display: flex;
-                gap: 8px;
-                margin-bottom: 10px;
-                align-items: center; 
+            .exercise-row {
+                background: #f9fbff;
+                padding: 25px;
+                border-radius: 10px;
+                border: 4px solid #d6e2ff;
             }
 
             .exercise-row select,
             .exercise-row input { 
                 flex: 1;
-                padding: 8px 10px;
-                border: 1px solid #b9c6e0; 
+                padding: 7px 10px;
+                border: 2px solid #b9c6e0; 
                 border-radius: 6px;
                 background: white;
             }
@@ -58,7 +58,12 @@
                 font-size: 14px;
             }
 
-            #submitBtn { background: #246aff; color: white; }
+        #submitBtn {
+            position: sticky;
+            bottom: 10px;
+            margin-top: 20px;
+            box-shadow: 0 6px 16px rgba(0,0,0);
+        }
             #addBtn { background: #28c22f; color: white; margin-top: 6px; }
             #savePkgBtn { background: #f39c12; color: white; }
 
@@ -69,6 +74,54 @@
                 margin-top: 20px;
                 background: white;
             }
+        @media (max-width: 600px) {
+            body {
+                margin: 0;
+                border-radius: 0;
+                max-width: 100%;
+                padding: 16px;
+                box-shadow: none;
+            }
+
+            h2 {
+                font-size: 22px;
+            }
+
+            .exercise-row {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .exercise-row select,
+            .exercise-row input {
+                font-size: 16px;
+                padding: 12px;
+            }
+
+            .remove-btn {
+                width: 100%;
+                height: 40px;
+                font-size: 18px;
+            }
+
+            button {
+                width: 100%;
+                padding: 14px;
+                font-size: 16px;
+            }
+
+            #addBtn {
+                margin-top: 12px;
+            }
+
+            #savePkgBtn {
+                margin-top: 12px;
+            }
+
+            .box {
+                font-size: 15px;
+            }
+        }
 
         </style>
         </head>
@@ -137,7 +190,7 @@
                         <option value="jumping_jacks">Jumping Jacks</option>
                         <option value="burpees">Burpees</option>
                     </select>
-                    <input type="text" class="amount" placeholder="20 reps / 1 min">
+                    <input type="text" class="amount" placeholder="Eg. 20 reps or 1 min">
                     <button class="remove-btn" title="Remove row">&times;</button>
                 `;
 
