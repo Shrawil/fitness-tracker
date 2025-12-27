@@ -15,13 +15,13 @@
                 border-radius: 16px;
                 box-shadow: 0 0 12px rgba(0,0,0,0.06);
             }
-
+            
             h2 {
                 text-align: center;
                 margin-bottom: 20px;
                 color: #1a3a8a;
             }
-
+            
             .exercise-row {
                 display: flex;
                 flex-direction: column;
@@ -36,7 +36,7 @@
                 border-radius: 6px;
                 background: white;
             }
-
+            
             .remove-btn {
                 align-self: flex-end;
                 width: auto;
@@ -46,7 +46,7 @@
                 background: #fff5f5;
                 border: 1px solid #f1b0b0;
             }
-
+            
             button { 
                 padding: 10px 16px; 
                 border: none;
@@ -54,7 +54,7 @@
                 cursor: pointer;
                 font-size: 14px;
             }
-
+            
         #submitBtn {
             position: sticky;
             bottom: 10px;
@@ -63,7 +63,7 @@
         }
             #addBtn { background: #28c22f; color: white; margin-top: 6px; }
             #savePkgBtn { background: #f39c12; color: white; }
-
+            
             .box {
                 border: 1px solid #d6e2ff;
                 padding: 16px;
@@ -79,81 +79,81 @@
                 padding: 16px;
                 box-shadow: none;
             }
-
+            
             h2 {
                 font-size: 22px;
             }
-
+            
             .exercise-row {
                 flex-direction: column;
                 gap: 10px;
             }
-
+            
             .exercise-row select,
             .exercise-row input {
                 font-size: 16px;
                 padding: 12px;
             }
-
+            
             .remove-btn {
                 width: 100%;
                 height: 40px;
                 font-size: 18px;
             }
-
+            
             button {
                 width: 100%;
                 padding: 14px;
                 font-size: 16px;
             }
-
+            
             #addBtn {
                 margin-top: 12px;
             }
-
+            
             #savePkgBtn {
                 margin-top: 12px;
             }
-
+            
             .box {
                 font-size: 15px;
             }
         }
-
+            
         </style>
         </head>
-
+    
         <body>
         <h2>Fitness Tracker</h2>
-
+        
         <div id="exerciseContainer"></div>
         <button id="addBtn">+ Add Exercise</button>
         <br><br>
-
+        
         <button id="savePkgBtn" style="background:#f39c12;color:white;margin-top:6px;">Save as Package</button>
-
+            
         <br><br>
         <label>Load Package:</label>
         <select id="packageSelect">
             <option value="">-- None --</option>
         </select>
-
+            
         <button id="submitBtn">Submit</button>
-
+        
         <div id="summary" class="box" style="display:none;"></div>
         <div id="streakBox" class="box"></div>
-
+            
         <script>
             /* ----------------- PACKAGE SYSTEM ----------------- */
-
+            
             function getPackages() {
                 return JSON.parse(localStorage.getItem("packages") || "{}");
             }
-
+            
             function savePackages(pkgs) {
                 localStorage.setItem("packages", JSON.stringify(pkgs));
             }
-
+            
             function refreshPackageList() {
                 const pkgs = getPackages();
                 const pkgSelect = document.getElementById("packageSelect");
@@ -165,126 +165,162 @@
                     pkgSelect.appendChild(opt);
                 }
             }
-
+            
             /* ----------------- ROW CREATION ----------------- */
-
+            
             function createExerciseRow(exValue = "", amtValue = "") {
                 const row = document.createElement("div");
                 row.className = "exercise-row";
-
+                
                 row.innerHTML = `
                     <select class="exercise">
                         <option value="">-- Select --</option>
-                        <option value="pushups">Push Ups</option>
-                        <option value="pullups">Pull Ups</option>
+                        
+                        <option value="wallpushups">Wall Push Ups</option>
+                        <option value="kneepushups">Knee Push Ups</option>
+                        <option value="normalpushups">Normal Push Ups</option>
+                        <option value="widepushups">Wide Push Ups</option>
+                        <option value="diamondpushups">Diamond Push Ups</option>
+                        <option value="russianpushups">Russian Push Ups</option>
+                        <option value="declinedpushups">Declined Push Ups</option>
+                        <option value="pikepushups">Pike Push Ups</option>
+                        <option value="archerpushups">Archer Push Ups</option>
+                        <option value="pseudo_planche_pushups">Pseudo Planche Push Ups</option>
+                        <option value="planche_pushups">Planche Push Ups</option>
                         <option value="dips">Dips</option>
+                        
+                        <option value="australianpullups">Australian Pull Ups</option>
+                        <option value="chinups">Chin Ups</option>
+                        <option value="closepullups">Close Grip Pull Ups</option>
+                        <option value="pullups">Pull Ups</option>
+                        <option value="widepullups">Wide Grip Pull Ups</option>
+                        <option value="negativemuscleups">Negative Muscle Ups</option>
+                        <option value="muscleups">Muscle Ups</option>
+                        
                         <option value="squats">Squats</option>
-                        <option value="legraises">Leg Raises</option>
-                        <option value="lsit">L-Sit</option>
                         <option value="lunges">Lunges</option>
+                        <option value="glutebridges">Glute Bridges</option>
+                        <option value="calfraises">Calf Raises</option>
+                        <option value="wall_sit">Wall Sit</option>
+                        <option value="jump_squats">Jump Squats</option>
+                        <option value="pistolsquats">Pistol Squats</option>
+                        
                         <option value="planks">Planks</option>
+                        <option value="side_plank">Side Plank</option>
                         <option value="situps">Sit Ups</option>
+                        <option value="flutter_kicks">Flutter Kicks</option>
+                        <option value="legraises">Leg Raises</option>
+                        <option value="hanging_leg_raises">Hanging Leg Raises</option>
+                        <option value="hollow_body_hold">Hollow Body Hold</option>
+                        <option value="toes_to_bar">Toes to Bar</option>
+                        <option value="lsit">L-Sit</option>
+                        
                         <option value="jumping_jacks">Jumping Jacks</option>
+                        <option value="high_knees">High Knees</option>
+                        <option value="mountain_climbers">Mountain Climbers</option>
+                        <option value="skipping">Skipping</option>
                         <option value="burpees">Burpees</option>
+                        <option value="bear_crawl">Bear Crawl</option>
+                        
                     </select>
                     <input type="text" class="amount" placeholder="Eg. 20 reps or 1 min">
                     <button class="remove-btn" title="Remove row">&times;</button>
                 `;
-
+                
                 const ex = row.querySelector(".exercise");
                 const amt = row.querySelector(".amount");
                 const removeBtn = row.querySelector(".remove-btn");
-
+                
                 ex.value = exValue;
                 amt.value = amtValue;
-
+                
                 removeBtn.addEventListener("click", () => row.remove());
-
+                
                 document.getElementById("exerciseContainer").appendChild(row);
                 return row;
             }
-
+            
             /* ----------------- LOAD PACKAGE ----------------- */
-
+            
             document.getElementById("packageSelect").addEventListener("change", () => {
                 const name = document.getElementById("packageSelect").value;
                 if (!name) return;
-
+                
                 const pkgs = getPackages();
                 const pkg = pkgs[name];
-
+                
                 const container = document.getElementById("exerciseContainer");
                 container.innerHTML = "";
-
+                
                 pkg.forEach(item => createExerciseRow(item.ex, item.amt));
             });
-
+            
             /* ----------------- SAVE PACKAGE ----------------- */
-
+            
             document.getElementById("savePkgBtn").addEventListener("click", () => {
                 const rows = document.querySelectorAll(".exercise-row");
                 let pkg = [];
-
+                
                 rows.forEach(row => {
                     const ex = row.querySelector(".exercise").value;
                     const amt = row.querySelector(".amount").value.trim();
                     if (ex && amt) pkg.push({ ex, amt });
                 });
-
+                
                 if (pkg.length === 0) {
                     alert("Add at least one exercise to save a package.");
                     return;
                 }
-
+                
                 const name = prompt("Name your package:");
                 if (!name) return;
-
+                
                 const pkgs = getPackages();
                 pkgs[name] = pkg;
                 savePackages(pkgs);
                 refreshPackageList();
-
+                
                 alert("Package saved.");
             });
-
+            
             /* ----------------- STREAK SYSTEM ----------------- */
-
+            
             function getToday() {
                 const d = new Date();
                 return d.toISOString().split("T")[0];
             }
-
+            
             function loadStreak() {
                 return Number(localStorage.getItem("streak") || 0);
             }
-
+            
             function loadLastDate() {
                 return localStorage.getItem("lastDate") || "";
             }
-
+            
             function saveStreak(streak, date) {
                 localStorage.setItem("streak", streak);
                 localStorage.setItem("lastDate", date);
             }
-
+            
             function updateStreak() {
                 const today = getToday();
                 const last = loadLastDate();
                 let streak = loadStreak();
-
+                
                 if (last === today) return streak;
-
+                
                 const y = new Date();
                 y.setDate(y.getDate() - 1);
                 const yesterday = y.toISOString().split("T")[0];
-
+                
                 if (last === yesterday) streak++;
                 else streak = 1;
-
+                
                 saveStreak(streak, today);
                 return streak;
             }
-
+            
             function refreshStreakBox() {
                 const streak = loadStreak();
                 const last = loadLastDate();
@@ -292,28 +328,28 @@
                     `<strong>Current Streak:</strong> ${streak} days<br>
                      <strong>Last Workout:</strong> ${last || "None"}`;
             }
-
+            
             /* ----------------- SUBMIT ----------------- */
-
+            
             document.getElementById("submitBtn").addEventListener("click", () => {
                 const rows = document.querySelectorAll(".exercise-row");
                 const summary = document.getElementById("summary");
                 let list = "";
-
+                
                 rows.forEach(row => {
                     const ex = row.querySelector(".exercise").value;
                     const amt = row.querySelector(".amount").value.trim();
                     if (ex && amt) list += `<p><strong>${ex}:</strong> ${amt}</p>`;
                 });
-
+                
                 if (!list) {
                     summary.style.display = "block";
                     summary.innerHTML = "Fill at least one exercise row.";
                     return;
                 }
-
+                
                 const streak = updateStreak();
-
+                
                 summary.style.display = "block";
                 summary.innerHTML = `
                     <h3>Workout Summary</h3>
@@ -323,18 +359,18 @@
                 `;
                 refreshStreakBox();
             });
-
+            
             /* ----------------- INIT ----------------- */
-
+            
             // THIS is the missing line you didn't have in your last file:
             document.getElementById("addBtn").addEventListener("click", createExerciseRow);
-
+            
             // create first row and load saved state
             createExerciseRow();
             refreshPackageList();
             refreshStreakBox();
-
+            
         </script>
-
+            
     </body>
 </html>
