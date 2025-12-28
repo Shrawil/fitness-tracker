@@ -124,6 +124,30 @@
         </head>
     
         <body>
+        <div id="profileBar" style="
+            display:flex;
+            align-items:center;
+            justify-content:flex-end;
+            gap:10px;
+            margin-bottom:16px;
+        ">
+            <div id="avatar" style="
+                width:36px;
+                height:36px;
+                border-radius:50%;
+                background:#1a3a8a;
+                color:white;
+                display:flex;
+                align-items:center;
+                justify-content:center;
+                font-weight:700;
+                cursor:pointer;
+            ">?</div>
+            <span id="profileName" style="font-weight:600;"></span>
+        </div>
+        
+        <input type="file" id="avatarInput" accept="image/*" style="display:none;">
+
         <h2>Fitness Tracker</h2>
         <div id="workoutUI">
             <div id="exerciseContainer"></div>
@@ -138,21 +162,13 @@
                 <option value="">-- None --</option>
             </select>
                 
-            <button id="submitBtn">Submit</button><br><br><br>
+            <button id="submitBtn">Submit</button><br><br>
         </div>
-        <div id="userNameDisplay" style="
-            text-align:center;
-            font-size:26px;
-            font-weight:700;
-            margin-bottom:20px;
-            color:#1a3a8a;
-        "></div>
         
         <div id="summary" class="box" style="display:none;"></div>
         <div id="streakBox" class="box"></div>
             
         <script>
-            /* ----------------- PACKAGE SYSTEM ----------------- */
             const exerciseNames = {
                 wallpushups: "Wall Push Ups",
                 kneepushups: "Knee Push Ups",
@@ -200,6 +216,70 @@
                 burpees: "Burpees",
                 bear_crawl: "Bear Crawl"
             };
+
+
+            
+            /* ----------- AVATAR AND USERNAME SYSTEM ------------*/
+
+            document.getElementById("avatar").addEventListener("click", () => {
+                if (!confirm("Edit profile?")) return;
+            
+                const currentName = getUserName();
+                const newName = prompt("Enter your name:", currentName);
+                if (newName) saveUser(newName);
+            
+                document.getElementById("avatarInput").click();
+            });
+
+            document.getElementById("avatarInput").addEventListener("change", e => {
+                const file = e.target.files[0];
+                if (!file) return;
+            
+                const reader = new FileReader();
+                reader.onload = () => {
+                    saveUser(null, reader.result);
+                    initProfile();
+                };
+                reader.readAsDataURL(file);
+            });
+            function getUserName() {
+                return localStorage.getItem("username");
+            }
+            
+            function getAvatar() {
+                return localStorage.getItem("userAvatar");
+            }
+            
+            function saveUser(name, avatar) {
+                if (name) localStorage.setItem("username", name);
+                if (avatar) localStorage.setItem("userAvatar", avatar);
+            }
+            
+            function initProfile() {
+                let name = getUserName();
+                if (!name) {
+                    name = prompt("Enter your name:");
+                    if (!name) name = "Anonymous Grinder";
+                    saveUser(name);
+                }
+            
+                const avatar = getAvatar();
+                const avatarDiv = document.getElementById("avatar");
+                const nameSpan = document.getElementById("profileName");
+            
+                nameSpan.textContent = name;
+            
+                if (avatar) {
+                    avatarDiv.style.backgroundImage = `url(${avatar})`;
+                    avatarDiv.style.backgroundSize = "cover";
+                    avatarDiv.textContent = "";
+                } else {
+                    avatarDiv.textContent = name.charAt(0).toUpperCase();
+                }
+            }
+
+            
+            /* ----------------- PACKAGE SYSTEM ----------------- */
 
             function getPackages() {
                 return JSON.parse(localStorage.getItem("packages") || "{}");
@@ -459,6 +539,7 @@
             refreshPackageList();
             refreshStreakBox();
             initUser();
+            initProfile();
         </script>
             
     </body>
