@@ -125,7 +125,14 @@
     
         <body>
         <h2>Fitness Tracker</h2>
-        
+        <div id="userNameDisplay" style="
+            text-align:center;
+            font-size:26px;
+            font-weight:700;
+            margin-bottom:20px;
+            color:#1a3a8a;
+        "></div>
+
         <div id="exerciseContainer"></div>
         <button id="addBtn">+ Add Exercise</button>
         <br><br>
@@ -359,7 +366,28 @@
                 `;
                 refreshStreakBox();
             });
+            /* ----------------- USER SYSTEM ----------------- */
+
+            function getUserName() {
+                return localStorage.getItem("username");
+            }
             
+            function setUserName(name) {
+                localStorage.setItem("username", name);
+            }
+            
+            function initUser() {
+                let name = getUserName();
+                
+                if (!name) {
+                    name = prompt("Enter your name:");
+                    if (!name) name = "Anonymous Grinder";
+                    setUserName(name);
+                }
+            
+                document.getElementById("userNameDisplay").textContent = name;
+            }
+
             /* ----------------- INIT ----------------- */
             
             // THIS is the missing line you didn't have in your last file:
@@ -369,7 +397,7 @@
             createExerciseRow();
             refreshPackageList();
             refreshStreakBox();
-            
+            initUser();
         </script>
             
     </body>
