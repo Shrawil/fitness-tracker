@@ -152,7 +152,54 @@
             
         <script>
             /* ----------------- PACKAGE SYSTEM ----------------- */
+            const exerciseNames = {
+                wallpushups: "Wall Push Ups",
+                kneepushups: "Knee Push Ups",
+                normalpushups: "Normal Push Ups",
+                widepushups: "Wide Push Ups",
+                diamondpushups: "Diamond Push Ups",
+                russianpushups: "Russian Push Ups",
+                declinedpushups: "Declined Push Ups",
+                pikepushups: "Pike Push Ups",
+                archerpushups: "Archer Push Ups",
+                pseudo_planche_pushups: "Pseudo Planche Push Ups",
+                planche_pushups: "Planche Push Ups",
+                dips: "Dips",
             
+                australianpullups: "Australian Pull Ups",
+                chinups: "Chin Ups",
+                closepullups: "Close Grip Pull Ups",
+                pullups: "Pull Ups",
+                widepullups: "Wide Grip Pull Ups",
+                negativemuscleups: "Negative Muscle Ups",
+                muscleups: "Muscle Ups",
+            
+                squats: "Squats",
+                lunges: "Lunges",
+                glutebridges: "Glute Bridges",
+                calfraises: "Calf Raises",
+                wall_sit: "Wall Sit",
+                jump_squats: "Jump Squats",
+                pistolsquats: "Pistol Squats",
+            
+                planks: "Planks",
+                side_plank: "Side Plank",
+                situps: "Sit Ups",
+                flutter_kicks: "Flutter Kicks",
+                legraises: "Leg Raises",
+                hanging_leg_raises: "Hanging Leg Raises",
+                hollow_body_hold: "Hollow Body Hold",
+                toes_to_bar: "Toes to Bar",
+                lsit: "L-Sit",
+            
+                jumping_jacks: "Jumping Jacks",
+                high_knees: "High Knees",
+                mountain_climbers: "Mountain Climbers",
+                skipping: "Skipping",
+                burpees: "Burpees",
+                bear_crawl: "Bear Crawl"
+            };
+
             function getPackages() {
                 return JSON.parse(localStorage.getItem("packages") || "{}");
             }
@@ -346,7 +393,10 @@
                 rows.forEach(row => {
                     const ex = row.querySelector(".exercise").value;
                     const amt = row.querySelector(".amount").value.trim();
-                    if (ex && amt) list += `<p><strong>${ex}:</strong> ${amt}</p>`;
+                    if (ex && amt) {
+                        const label = exerciseNames[ex] || ex;
+                        list += `<p><strong>${label}:</strong> ${amt}</p>`;
+                    }
                 });
                 
                 if (!list) {
