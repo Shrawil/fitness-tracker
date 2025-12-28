@@ -507,28 +507,6 @@
                 refreshStreakBox();
             });
 
-            /* ----------------- USER SYSTEM ----------------- */
-
-            function getUserName() {
-                return localStorage.getItem("username");
-            }
-            
-            function setUserName(name) {
-                localStorage.setItem("username", name);
-            }
-            
-            function initUser() {
-                let name = getUserName();
-                
-                if (!name) {
-                    name = prompt("Enter your name:");
-                    if (!name) name = "Anonymous Grinder";
-                    setUserName(name);
-                }
-            
-                document.getElementById("userNameDisplay").textContent = name;
-            }
-
             /* ----------------- INIT ----------------- */
             
             // THIS is the missing line you didn't have in your last file:
@@ -538,7 +516,6 @@
             createExerciseRow();
             refreshPackageList();
             refreshStreakBox();
-            initUser();
             initProfile();
         </script>
             
